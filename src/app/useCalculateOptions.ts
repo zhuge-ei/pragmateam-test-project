@@ -12,6 +12,7 @@ import { type FlatReservation } from "./helper";
 
 export const useCalculateOptions = (
   canReserve: boolean,
+  hasReservedTomorrow: boolean,
   reservationsForSelectedDate: FlatReservation[],
   selectedDate?: Date ,
   selectedStart?: Date,
@@ -62,7 +63,7 @@ export const useCalculateOptions = (
       startOptions[lastPossibleOptionIndex],
     ).map((v) => v + 1);
 
-    if (startOptions[lastPossibleOptionIndex] !== 17) return options;
+    if (hasReservedTomorrow||startOptions[lastPossibleOptionIndex] !== 17) return options;
     let tommorowOptions = [10, 11];
     for (const reservation of reservationsForSelectedDate) {
       if (isSameDay(reservation.start, selectedDate!)) continue;

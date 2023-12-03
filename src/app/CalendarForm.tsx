@@ -18,6 +18,7 @@ import { isSameDay, isToday } from "date-fns";
 const CalendarForm = ({ name }: { name?: string | null }) => {
   const {
     canReserve,
+    hasReservedTomorrow,
     isLoading: isQueryLoading,
     refetch,
     reservationsForSelectedDate,
@@ -41,6 +42,7 @@ const CalendarForm = ({ name }: { name?: string | null }) => {
   const selectedStart = watch("start");
   const { endOptions, startOptions } = useCalculateOptions(
     canReserve,
+    hasReservedTomorrow,
     reservationsForSelectedDate,
     selectedDate,
     selectedStart,
@@ -68,13 +70,16 @@ const CalendarForm = ({ name }: { name?: string | null }) => {
     if (view === "month") {
       return (
         <div
-          className={clsx("group absolute h-full w-full top-0 right-0 flex justify-end items-start p-1", {
-            "group-hover:opacity-100": count > 0,
-          })}
+          className={clsx(
+            "group absolute right-0 top-0 flex h-full w-full items-start justify-end p-1",
+            {
+              "group-hover:opacity-100": count > 0,
+            },
+          )}
         >
           <div
             className={clsx(
-              "h-5 w-5 rounded-full bg-teal-700 opacity-0 transition-all text-center items-center justify-center flex",
+              "flex h-5 w-5 items-center justify-center rounded-full bg-teal-700 text-center opacity-0 transition-all",
               { "group-hover:opacity-100": count > 0 },
             )}
           >
