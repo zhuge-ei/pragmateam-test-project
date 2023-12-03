@@ -1,9 +1,9 @@
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { db } from "../db";
 import { endOfDay, endOfMonth, startOfDay, startOfMonth } from "date-fns";
-import { reserveInputSchema } from "./input.schema";
 import { TRPCError } from "@trpc/server";
 import { roundToHour } from "~/utils/time";
+import { ReserveSchema } from "~/trpc/schemas/reserve";
 
 /**
  * This is the primary router for your server.
@@ -27,7 +27,7 @@ export const appRouter = createTRPCRouter({
     });
   }),
   reserve: protectedProcedure
-    .input(reserveInputSchema)
+    .input(ReserveSchema)
     .mutation(async ({ input, ctx }) => {
       if (!ctx.session.user.name) {
         if (!input.name)

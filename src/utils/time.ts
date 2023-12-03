@@ -6,7 +6,11 @@ export const roundToHour = (date: Date) => {
 export const isWithinBusinessHours = (date: Date) => {
   const day = date.getDay();
   const hours = date.getHours();
-  return day >= 1 && day <= 5 && hours >= 9 && hours < 17; // Monday to Friday, 9 AM to 5 PM
+  return day >= 1 && day <= 5 && hours >= 9 && hours <= 17; // Monday to Friday, 9 AM to 5 PM
+};
+export const isBusinessDay = (date: Date) => {
+  const day = date.getDay();
+  return day >= 1 && day <= 5;
 };
 
 export const isWithinCurrentMonth = (date: Date) => {

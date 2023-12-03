@@ -6,7 +6,7 @@ import {
   roundToHour,
 } from "~/utils/time";
 
-export const reserveInputSchema = z
+export const ReserveSchema = z
   .object({
     start: z.preprocess((arg) => {
       if (typeof arg == "string" || arg instanceof Date) {
@@ -44,7 +44,7 @@ export const reserveInputSchema = z
         code: z.ZodIssueCode.custom,
         path: ["start"],
         message:
-          "Start and end times must be between 9 AM and 5 PM on workdays",
+          "Start must be between 9 AM and 5 PM on workdays",
       });
     }
 
@@ -53,7 +53,7 @@ export const reserveInputSchema = z
         code: z.ZodIssueCode.custom,
         path: ["end"],
         message:
-          "Start and end times must be between 9 AM and 5 PM on workdays",
+          "end must be between 9 AM and 5 PM on workdays",
       });
     }
     if (normalizedEnd <= normalizedStart) {
@@ -75,3 +75,4 @@ export const reserveInputSchema = z
       });
     }
   });
+export type ReserveSchemaType = z.infer<typeof ReserveSchema>
