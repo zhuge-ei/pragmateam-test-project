@@ -11,7 +11,7 @@ export const db =
   new PrismaClient({
     datasourceUrl:
       env.NODE_ENV === "test"
-        ? "postgresql://test_user:test_password@localhost:5432/test_db?schema=public"
+        ? env.DATABASE_URL
         : undefined,
     log:
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
