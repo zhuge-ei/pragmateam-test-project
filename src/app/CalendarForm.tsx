@@ -1,17 +1,19 @@
 "use client";
+
 import React, { useCallback } from "react";
 import Loading from "./_components/loading";
 import Input from "./_components/input";
 import Select from "./_components/select";
 import Button from "./_components/button";
-import Calendar from "react-calendar";
+import Calendar, { type TileContentFunc } from "react-calendar";
 import { isBusinessDay } from "~/utils/time";
 import ReservationList from "./ReservationList";
-import { useCalendarLogic } from "./useCalendarLogic";
 import { useReservationData } from "./useReservationData";
 import { availableHoursToPOptions } from "~/utils/timeSelection";
 import { useReservationForm } from "./useReservationForm";
 import { useCalculateOptions } from "./useCalculateOptions";
+import clsx from "clsx";
+import { isSameDay, isToday } from "date-fns";
 
 const CalendarForm = ({ name }: { name?: string | null }) => {
   const {
@@ -36,13 +38,52 @@ const CalendarForm = ({ name }: { name?: string | null }) => {
     onSubmit,
     register,
   } = useReservationForm(canReserve, promiseRefetch);
+  const selectedStart = watch("start");
   const { endOptions, startOptions } = useCalculateOptions(
     canReserve,
     reservationsForSelectedDate,
     selectedDate,
-    watch("start"),
+    selectedStart,
   );
-  const tileClassName = useCalendarLogic(partitionedData, selectedDate);
+  const tileClassName = useCallback(
+    ({ date }: { date: Date }) => {
+      const items = partitionedData.get(date.getTime());
+      const count = items?.length ?? 0;
+
+      return clsx("relative z-0 h-20 w-20", {
+        "!border-purple-300 border": isToday(date),
+        "!border-blue-300 border":
+          selectedDate && isSameDay(selectedDate, date),
+        "!bg-black cursor-not-allowed": !isBusinessDay(date),
+        "!bg-green-200": count > 0 && count <= 3,
+        "!bg-green-400": count > 3 && count <= 6,
+        "!bg-green-600": count > 6,
+      });
+    },
+    [selectedDate, partitionedData],
+  );
+  const tileContent: TileContentFunc = ({ date, view }) => {
+    const items = partitionedData.get(date.getTime());
+    const count = items?.length ?? 0;
+    if (view === "month") {
+      return (
+        <div
+          className={clsx("group absolute h-full w-full top-0 right-0 flex justify-end items-start p-1", {
+            "group-hover:opacity-100": count > 0,
+          })}
+        >
+          <div
+            className={clsx(
+              "h-5 w-5 rounded-full bg-teal-700 opacity-0 transition-all text-center items-center justify-center flex",
+              { "group-hover:opacity-100": count > 0 },
+            )}
+          >
+            <span className="text-xs font-light">{count}</span>
+          </div>
+        </div>
+      );
+    }
+  };
   const onDayClick = useCallback(
     (value: Date) => {
       if (isBusinessDay(value)) {
@@ -52,6 +93,7 @@ const CalendarForm = ({ name }: { name?: string | null }) => {
     },
     [setSelectedDate, resetField],
   );
+
   if (isQueryLoading) return <Loading />;
   return (
     <>
@@ -60,6 +102,7 @@ const CalendarForm = ({ name }: { name?: string | null }) => {
         onClickDay={onDayClick}
         showNeighboringMonth={false}
         showNavigation={false}
+        tileContent={tileContent}
       />
       {selectedDate && (
         <ReservationList

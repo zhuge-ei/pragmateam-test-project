@@ -8,7 +8,7 @@ import {
 } from "date-fns";
 import { type RouterOutputs } from "~/trpc/shared";
 
-export interface PartitionedItem {
+export interface FlatReservation {
   name: string;
   start: Date;
   end: Date;
@@ -16,8 +16,8 @@ export interface PartitionedItem {
 
 export const partitionItemsByDay = (
   reservations: RouterOutputs["getReservationsForAMonth"],
-): Map<number, PartitionedItem[]> => {
-  const partitionedItems = new Map<number, PartitionedItem[]>();
+): Map<number, FlatReservation[]> => {
+  const partitionedItems = new Map<number, FlatReservation[]>();
   const now = new Date();
   const start = startOfMonth(now);
   const end = endOfMonth(now);

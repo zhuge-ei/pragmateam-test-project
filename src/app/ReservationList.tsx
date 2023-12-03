@@ -1,5 +1,5 @@
 import React from "react";
-import { type PartitionedItem } from "./helper";
+import { type FlatReservation } from "./helper";
 import { format, isSameDay } from "date-fns";
 
 export const getTimeInWeekDayHourFormatt = (selectedDate: Date, time: Date) =>
@@ -13,7 +13,7 @@ const ReservationList = ({
   data,
 }: {
   selectedDate: Date;
-  data: PartitionedItem[];
+  data: FlatReservation[];
 }) => {
   return (
     <div>

@@ -8,10 +8,11 @@ import range from "lodash.range";
 import remove from "lodash.remove";
 import { useMemo } from "react";
 import { getNextWorkingDay } from "~/utils/time";
+import { type FlatReservation } from "./helper";
 
 export const useCalculateOptions = (
   canReserve: boolean,
-  reservationsForSelectedDate: any[],
+  reservationsForSelectedDate: FlatReservation[],
   selectedDate?: Date ,
   selectedStart?: Date,
 ) => {

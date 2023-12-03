@@ -4,10 +4,7 @@ import { partitionItemsByDay } from "./helper";
 import { getNextWorkingDay } from "~/utils/time";
 import { getHours, isFuture, isSameDay, isToday } from "date-fns";
 
-export const useReservationData = (
-    name?: string | null,
-    selectedStart?: number,
-) => {
+export const useReservationData = (name?: string | null) => {
   const { isLoading, data, refetch } =
     api.getReservationsForAMonth.useQuery(undefined);
   const [selectedDate, setSelectedDate] = useState<Date>();
@@ -34,10 +31,14 @@ export const useReservationData = (
     if (
       name &&
       reservationsForSelectedDate.some(
-        (reservation) => reservation.name === name,
+        (reservation) =>
+          reservation.name === name &&
+          (isSameDay(reservation.start, selectedDate) ||
+            isSameDay(reservation.end, selectedDate)),
       )
     )
       return false;
+
     return isFuture(selectedDate) || isToday(selectedDate);
   }, [selectedDate, reservationsForSelectedDate, name]);
   return {
